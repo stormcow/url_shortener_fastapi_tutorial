@@ -49,6 +49,14 @@ def forward_to_target_url(
     else:
         raise_not_found(request)
 
+@app.get("/peek/{url_key}")
+def peek_url(
+    url_key: str, request: Request, db: Session = Depends(get_db)
+):
+    if db_url := crud.get_db_url_by_key(db=db, url_key=url_key):
+        return {'target_url':db_url.target_url}
+    else:
+        raise_not_found(request)
 
 @app.post("/url", response_model=schemas.URLInfo)
 def create_url(url: schemas.URLBase, db: Session = Depends(get_db)):
